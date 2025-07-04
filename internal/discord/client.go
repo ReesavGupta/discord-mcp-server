@@ -29,7 +29,6 @@ func NewClient(token string, logger *logrus.Logger) (*Client, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Discord session: %w", err)
 	}
-
 	return &Client{
 		session: session,
 		logger:  logger,
@@ -40,7 +39,6 @@ func (c *Client) Connect() error {
 	c.session.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		c.logger.Info("Discord bot is ready")
 	})
-
 	return c.session.Open()
 }
 
@@ -53,7 +51,6 @@ func (c *Client) SendMessage(channelID, content string) (*discordgo.Message, err
 		"channel_id": channelID,
 		"content":    content,
 	}).Info("Sending message")
-
 	return c.session.ChannelMessageSend(channelID, content)
 }
 
@@ -62,7 +59,6 @@ func (c *Client) GetMessages(channelID string, limit int) ([]*discordgo.Message,
 		"channel_id": channelID,
 		"limit":      limit,
 	}).Info("Fetching messages")
-
 	return c.session.ChannelMessages(channelID, limit, "", "", "")
 }
 
@@ -70,7 +66,6 @@ func (c *Client) GetChannelInfo(channelID string) (*discordgo.Channel, error) {
 	c.logger.WithFields(logrus.Fields{
 		"channel_id": channelID,
 	}).Info("Fetching channel info")
-
 	return c.session.Channel(channelID)
 }
 
@@ -86,7 +81,6 @@ func (c *Client) SearchMessages(filter MessageFilter) ([]*discordgo.Message, err
 			filtered = append(filtered, msg)
 		}
 	}
-
 	return filtered, nil
 }
 
@@ -99,10 +93,8 @@ func (c *Client) matchesFilter(msg *discordgo.Message, filter MessageFilter) boo
 		return false
 	}
 
-	msgTime, err := msg.Timestamp.Parse()
-	if err != nil {
-		return false
-	}
+	// msg.Timestamp is already a time.Time, no need to parse
+	msgTime := msg.Timestamp
 
 	if filter.Before != nil && msgTime.After(*filter.Before) {
 		return false
@@ -120,7 +112,6 @@ func (c *Client) DeleteMessage(channelID, messageID string) error {
 		"channel_id": channelID,
 		"message_id": messageID,
 	}).Info("Deleting message")
-
 	return c.session.ChannelMessageDelete(channelID, messageID)
 }
 
@@ -130,7 +121,6 @@ func (c *Client) KickUser(guildID, userID, reason string) error {
 		"user_id":  userID,
 		"reason":   reason,
 	}).Info("Kicking user")
-
 	return c.session.GuildMemberDeleteWithReason(guildID, userID, reason)
 }
 
@@ -141,6 +131,31 @@ func (c *Client) BanUser(guildID, userID, reason string, deleteMessageDays int) 
 		"reason":              reason,
 		"delete_message_days": deleteMessageDays,
 	}).Info("Banning user")
-
 	return c.session.GuildBanCreateWithReason(guildID, userID, reason, deleteMessageDays)
+}
+
+// Additional helper methods for better functionality
+func (c *Client) SetGuildID(guildID string) {
+	c.guildID = guildID
+}
+
+func (c *Client) GetGuildID() string {
+	return c.guildID
+}
+
+// Get guild channels
+func (c *Client) GetGuildChannels(guildID string) ([]*discordgo.Channel, error) {
+	c.logger.WithFields(logrus.Fields{
+		"guild_id": guildID,
+	}).Info("Fetching guild channels")
+	return c.session.GuildChannels(guildID)
+}
+
+// Get guild members
+func (c *Client) GetGuildMembers(guildID string, limit int) ([]*discordgo.Member, error) {
+	c.logger.WithFields(logrus.Fields{
+		"guild_id": guildID,
+		"limit":    limit,
+	}).Info("Fetching guild members")
+	return c.session.GuildMembers(guildID, "", limit)
 }
