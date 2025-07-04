@@ -1,0 +1,29 @@
+server:
+  name: "discord-mcp-server"
+  version: "1.0.0"
+  environment: "development"
+
+discord:
+  bot_token: "${DISCORD_BOT_TOKEN}"
+  guild_id: "${DISCORD_GUILD_ID}"
+  allowed_roles:
+    - "Admin"
+    - "Moderator"
+
+auth:
+  jwt_secret: "${JWT_SECRET}"
+  api_keys:
+    - "${API_KEY_1}"
+    - "${API_KEY_2}"
+  enable_audit: true
+  audit_log_path: "logs/audit.log"
+
+logging:
+  level: "info"
+  format: "json"
+  file_path: "logs/server.log"
+
+mcp:
+  protocol_version: "2024-11-05"
+  transport: "stdio"
+  debug: false

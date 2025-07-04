@@ -1,0 +1,34 @@
+# 1. Environment variables
+.env
+
+# 2. Dependency directories (if using vendoring)
+vendor/
+
+# 3. OS generated files
+.DS_Store
+Thumbs.db
+
+# 4. Compiled binaries
+*.exe
+*.out
+*.dll
+*.so
+
+# 5. IDE/editor settings
+.vscode/
+.idea/
+
+# 6. Test output
+*.test
+
+# 7. Coverage reports
+coverage.out
+
+# 8. Logs
+*.log
+
+# 9. Temporary files
+*.tmp
+
+# 10. Go module cache (if present)
+.gocache/

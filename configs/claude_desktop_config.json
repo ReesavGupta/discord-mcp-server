@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "discord-mcp-server": {
+      "command": "/usr/local/bin/discord-mcp-server",
+      "args": ["-config", "/path/to/config.yaml"],
+      "env": {
+        "DISCORD_BOT_TOKEN": "your_bot_token",
+        "DISCORD_GUILD_ID": "your_guild_id",
+        "JWT_SECRET": "your_jwt_secret",
+        "API_KEY_1": "your_api_key"
+      }
+    }
+  }
+}
